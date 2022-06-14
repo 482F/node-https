@@ -18,6 +18,10 @@ function consoleRequest(req, params) {
   const pass = (await fs.readFile('pass.txt', 'utf-8')).replaceAll(/\n/g, '')
   http
     .createServer((req, res) => {
+      res.setHeader('Access-Control-Allow-Origin', '*')
+      res.setHeader('Access-Control-Request-Method', '*')
+      res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET')
+      res.setHeader('Access-Control-Allow-Headers', '*')
       const gotPass = req.url.split('/')[1]
       if (gotPass !== pass) {
         return
