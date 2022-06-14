@@ -1,3 +1,12 @@
+function getIp(req) {
+  return (
+    req.headers['x-forwarded-for'] ??
+    req.connection?.remoteAddress ??
+    req.connection.socket?.remoteAddress ??
+    req.socket?.remoteAddress
+  )
+}
+
 ;(async function main() {
   const fs = require('fs').promises
   const httpPort = 14538
