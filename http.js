@@ -23,41 +23,49 @@ function consoleRequest(req, params) {
       res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET')
       res.setHeader('Access-Control-Allow-Headers', '*')
       const gotPass = req.url.split('/')[1]
-      if (gotPass !== pass) {
-        return
-      }
-      process(req, res)
+      process(req, res, gotPass === pass)
     })
     .listen(httpPort)
 })()
 
 function getParams(url) {
   const params = {}
-  const [paths, queries] = url.split('?')
+  const [rawPaths, rawQueries] = url.split('?')
+  const paths = rawPaths.split('/')
+  const queries = rawQueries?.split('&')
+
+  params.pass = paths[1]
+
   paths
-    .split('/')
     .slice(2)
     .forEach((path, i) => (params[i] = path))
+
   queries
-    ?.split('&')
     ?.map((query) => query.split('='))
     ?.forEach(([key, value]) => (params[key] = decodeURIComponent(value)))
+
   return params
 }
 
-async function process(req, res) {
-  res.writeHead(200, {
-    'Content-Type': 'text/plain; charset=UTF-8',
-  })
+async function process(req, res, passMatched) {
+  const params = getParams(req.url)
+  const funcName = params[0]
 
-  const funcs = {
+  consoleRequest(req, params)
+
+  const hiddenFuncs = {
     gohome,
+  }
+  const funcs = {
     regalias,
   }
 
-  const params = getParams(req.url)
+  const func = funcs[funcName] ?? (passMatched && hiddenFuncs[funcName])
+  if (!func) return
 
-  consoleRequest(req, params)
+  res.writeHead(200, {
+    'Content-Type': 'text/plain; charset=UTF-8',
+  })
   res.end(await funcs[params[0]](params))
 }
 
