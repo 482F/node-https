@@ -7,6 +7,10 @@ function getIp(req) {
   )
 }
 
+function consoleRequest(req, params) {
+  console.log(new Date().toLocaleString('ja'), { sourceIp: getIp(req), params })
+}
+
 ;(async function main() {
   const fs = require('fs').promises
   const httpPort = 14538
