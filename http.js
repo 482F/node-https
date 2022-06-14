@@ -51,7 +51,8 @@ async function process(req, res) {
   })
 
   const funcs = {
-    gohome: gohome,
+    gohome,
+    regalias,
   }
 
   const params = getParams(req.url)
@@ -70,4 +71,12 @@ async function gohome(params) {
       }
     )
   })
+}
+
+async function regalias(params) {
+  const regalias = await import('regalias-node').then(
+    (module) => module.default
+  )
+
+  return regalias(params[1] || undefined)
 }
