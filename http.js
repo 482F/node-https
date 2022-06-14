@@ -55,6 +55,8 @@ async function process(req, res) {
   }
 
   const params = getParams(req.url)
+
+  consoleRequest(req, params)
   res.end(await funcs[params[0]](params))
 }
 
