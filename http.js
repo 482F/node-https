@@ -15,7 +15,7 @@ function consoleRequest(req, params) {
   const fs = require('fs').promises
   const httpPort = 14538
   const http = require('http')
-  const pass = (await fs.readFile('pass.txt', 'utf-8')).replaceAll(/\n/g, '')
+  const info = JSON.parse(await fs.readFile('info.json', 'utf-8'))
   http
     .createServer((req, res) => {
       res.setHeader('Access-Control-Allow-Origin', '*')
@@ -23,7 +23,7 @@ function consoleRequest(req, params) {
       res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET')
       res.setHeader('Access-Control-Allow-Headers', '*')
       const gotPass = req.url.split('/')[1]
-      process(req, res, gotPass === pass)
+      process(req, res, gotPass === info.pass)
     })
     .listen(httpPort)
 })()
@@ -36,9 +36,7 @@ function getParams(url) {
 
   params.pass = paths[1]
 
-  paths
-    .slice(2)
-    .forEach((path, i) => (params[i] = path))
+  paths.slice(2).forEach((path, i) => (params[i] = path))
 
   queries
     ?.map((query) => query.split('='))
