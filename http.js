@@ -14,10 +14,14 @@ function consoleRequest(req, params) {
 ;(async function main() {
   const fs = require('fs').promises
   const httpPort = 14538
-  const http = require('http')
+  const https = require('https')
   const info = JSON.parse(await fs.readFile('info.json', 'utf-8'))
-  http
-    .createServer((req, res) => {
+  const options = {
+    key: await fs.readFile(info.key),
+    cert: await fs.readFile(info.cert),
+  }
+  https
+    .createServer(options, (req, res) => {
       res.setHeader('Access-Control-Allow-Origin', '*')
       res.setHeader('Access-Control-Request-Method', '*')
       res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET')
