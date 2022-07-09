@@ -68,7 +68,7 @@ async function process(req, res, passMatched) {
   res.writeHead(200, {
     'Content-Type': 'text/plain; charset=UTF-8',
   })
-  res.end(await funcs[params[0]](params))
+  res.end(await func(params))
 }
 
 async function gohome(params) {
